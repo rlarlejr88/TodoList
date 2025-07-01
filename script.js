@@ -1,145 +1,150 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const addButton = document.getElementById('add-button');
-    const todoInput = document.getElementById('todo-input');
-    const todoList = document.getElementById('todo-list');
-    const allBtn = document.getElementById('all-btn');
-    const completedBtn = document.getElementById('completed-btn');
-    const activeBtn = document.getElementById('active-btn');
-  
-    // 새로운 할 일 항목(li) 생성 함수
-    function createTodoItem(text, completed = false) {
-      const li = document.createElement('li');
-      li.className = 'todo-item';
-      if (completed) {
-        li.classList.add('completed');
-      }
-  
-      // 할 일 텍스트를 담는 span 생성
-      const span = document.createElement('span');
-      span.textContent = text;
-      li.appendChild(span);
-  
-      // 수정 버튼 생성
-      const editButton = document.createElement('button');
-      editButton.textContent = '수정';
-      li.appendChild(editButton);
-  
-      // 삭제 버튼 생성
-      const deleteButton = document.createElement('button');
-      deleteButton.textContent = '삭제';
-      li.appendChild(deleteButton);
-  
-      // 삭제 버튼 이벤트: 항목 삭제 후 저장
-      deleteButton.addEventListener('click', function(e) {
-        e.stopPropagation(); // li 클릭 이벤트 전파 방지
-        li.remove();
-        saveTodos();
-      });
-  
-      // 수정 버튼 이벤트: 수정 모드와 저장 모드 전환
-      editButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (editButton.textContent === '수정') {
-          // 수정 모드: span을 input으로 교체
-          const editInput = document.createElement('input');
-          editInput.type = 'text';
-          editInput.value = span.textContent;
-          li.insertBefore(editInput, span);
-          li.removeChild(span);
-          editButton.textContent = '저장';
-        } else {
-          // 저장 모드: input 값을 span으로 복구
-          const editInput = li.querySelector('input');
-          const newText = editInput.value.trim();
-          if (newText !== "") {
-            const newSpan = document.createElement('span');
-            newSpan.textContent = newText;
-            li.insertBefore(newSpan, editInput);
-            li.removeChild(editInput);
-          }
+document.addEventListener('DOMContentLoaded', function () {
+  // 투두 리스트 관련 요소
+  const todoList = document.getElementById('todo-list');
+  const newTodoInput = document.getElementById('new-todo');
+  const addTodoButton = document.getElementById('add-todo');
+
+  // 투두 리스트 항목 생성 함수
+  function createTodoItem(text, completed = false) {
+    const li = document.createElement('li');
+    li.className = 'todo-item';
+    if (completed) {
+      li.classList.add('completed');
+    }
+
+    // 텍스트 스팬 추가
+    const span = document.createElement('span');
+    span.textContent = text;
+    li.appendChild(span);
+
+    // 버튼 컨테이너 생성
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    // 수정 버튼 추가
+    const editButton = document.createElement('button');
+    editButton.textContent = '수정';
+    buttonContainer.appendChild(editButton);
+
+    // 완료 버튼 추가
+    const completeButton = document.createElement('button');
+    completeButton.textContent = completed ? '완료 취소' : '완료';
+    buttonContainer.appendChild(completeButton);
+
+    // 삭제 버튼 추가 (초기에는 숨김)
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '삭제';
+    deleteButton.style.display = completed ? 'inline-block' : 'none'; // 완료된 항목만 표시
+    buttonContainer.appendChild(deleteButton);
+
+    li.appendChild(buttonContainer);
+
+    // 완료 상태 토글
+    completeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      li.classList.toggle('completed');
+      deleteButton.style.display = li.classList.contains('completed') ? 'inline-block' : 'none';
+      completeButton.textContent = li.classList.contains('completed') ? '완료 취소' : '완료';
+      saveTodos();
+    });
+
+    // 수정 버튼 기능
+    editButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (editButton.textContent === '수정') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = span.textContent;
+        li.insertBefore(input, span);
+        li.removeChild(span);
+        editButton.textContent = '저장';
+      } else {
+        const input = li.querySelector('input');
+        if (input.value.trim() !== '') {
+          span.textContent = input.value.trim();
+          li.insertBefore(span, input);
+          li.removeChild(input);
           editButton.textContent = '수정';
           saveTodos();
         }
-      });
-  
-      // li 클릭 시 완료 상태 토글 (버튼, input 제외)
-      li.addEventListener('click', function(e) {
-        if (e.target.tagName.toLowerCase() === 'button' || e.target.tagName.toLowerCase() === 'input') {
-          return;
-        }
-        li.classList.toggle('completed');
-        saveTodos();
-      });
-  
-      todoList.appendChild(li);
-      saveTodos();
-    }
-  
-    // 할 일 추가 함수
-    function addTodo() {
-      const text = todoInput.value.trim();
-      if (text === "") return;
-      createTodoItem(text, false);
-      todoInput.value = "";
-    }
-  
-    // 추가 버튼 및 Enter 키 이벤트 등록
-    addButton.addEventListener('click', addTodo);
-    todoInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        addTodo();
       }
     });
-  
-    // 필터링 기능: 전체, 완료, 미완료 항목 보여주기
-    function applyFilter(filter) {
-      const items = document.querySelectorAll('.todo-item');
-      items.forEach(item => {
-        const isCompleted = item.classList.contains('completed');
-        if (filter === 'all') {
-          item.style.display = 'flex';
-        } else if (filter === 'completed') {
-          item.style.display = isCompleted ? 'flex' : 'none';
-        } else if (filter === 'active') {
-          item.style.display = !isCompleted ? 'flex' : 'none';
-        }
-      });
+
+    // 삭제 버튼 기능
+    deleteButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      li.remove();
+      saveTodos();
+    });
+
+    todoList.appendChild(li);
+    saveTodos();
+  }
+
+  // 새 투두 추가
+  addTodoButton.addEventListener('click', () => {
+    const text = newTodoInput.value.trim();
+    if (text) {
+      createTodoItem(text);
+      newTodoInput.value = '';
     }
-  
-    allBtn.addEventListener('click', function() { applyFilter('all'); });
-    completedBtn.addEventListener('click', function() { applyFilter('completed'); });
-    activeBtn.addEventListener('click', function() { applyFilter('active'); });
-  
-    // localStorage에 할 일 목록 저장
-    function saveTodos() {
-      const todos = [];
-      const items = document.querySelectorAll('.todo-item');
-      items.forEach(item => {
-        const span = item.querySelector('span');
-        if (!span) return; // 수정 모드 중인 항목은 스킵
-        const text = span.textContent;
-        const completed = item.classList.contains('completed');
-        todos.push({ text, completed });
-      });
-      localStorage.setItem('todos', JSON.stringify(todos));
-    }
-  
-    // localStorage에서 할 일 목록 불러오기
-    function loadTodos() {
-      const todosStr = localStorage.getItem('todos');
-      if (todosStr) {
-        const todos = JSON.parse(todosStr);
-        todos.forEach(todo => {
-          createTodoItem(todo.text, todo.completed);
-        });
-      }
-    }
-  
-    // 페이지 로드 시 저장된 할 일 불러오기
-    loadTodos();
   });
 
-  const CACHE_NAME = 'todo-app-cache-v1';
+  newTodoInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const text = newTodoInput.value.trim();
+      if (text) {
+        createTodoItem(text);
+        newTodoInput.value = '';
+      }
+    }
+  });
+
+  // 투두 리스트 저장
+  function saveTodos() {
+    const todos = [];
+    document.querySelectorAll('.todo-item').forEach((item) => {
+      const text = item.querySelector('span').textContent;
+      const completed = item.classList.contains('completed');
+      todos.push({ text, completed });
+    });
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }
+
+  // 투두 리스트 로드
+  function loadTodos() {
+    const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+    todos.forEach((todo) => createTodoItem(todo.text, todo.completed));
+  }
+
+  // 초기화
+  loadTodos();
+
+  // 뒤로가기 버튼 기능
+  const backButton = document.querySelector('#back-button');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      if (document.referrer) {
+      window.location.href = document.referrer; // 이전 페이지로 이동
+      } else {
+      window.history.back(); // 이전 페이지 기록이 없으면 history.back() 사용
+      }
+    });
+  }
+
+  // 가계부 관련 요소 및 기능 삭제
+  // const accountList = document.getElementById('account-list');
+  // const accountDescriptionInput = document.getElementById('account-description');
+  // const accountAmountInput = document.getElementById('account-amount');
+  // const addAccountButton = document.getElementById('add-account');
+  // const totalAmountElement = document.getElementById('total-amount');
+
+  // function updateTotalAmount() { ... }
+  // function createAccountItem(description, amount) { ... }
+  // addAccountButton.addEventListener('click', () => { ... });
+});
+
+const CACHE_NAME = 'todo-app-cache-v1';
 const urlsToCache = [
   './',
   './index.html',
@@ -168,3 +173,26 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+    .then(registration => {
+      console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(error => {
+      console.error('Service Worker registration failed:', error);
+    });
+
+  // Display current date and time on separate lines
+  function updateDateTime() {
+    const currentDateElement = document.getElementById('current-date');
+    const currentTimeElement = document.getElementById('current-time');
+    if (currentDateElement && currentTimeElement) {
+      const now = new Date();
+      currentDateElement.textContent = now.toLocaleDateString();
+      currentTimeElement.textContent = now.toLocaleTimeString();
+    }
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
+}

@@ -1,43 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo List App</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
+  <title>투두 리스트</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header>
-    <h1>Todo List</h1>
-  </header>
-
-  <div class="input-container">
-    <input type="text" id="todo-input" placeholder="할 일을 입력하세요">
-    <button id="add-button">추가</button>
+  <div id="app">
+    <header>
+      <h1>투두 리스트</h1>
+      <div id="current-date-time">
+        <div id="current-date"></div>
+        <div id="current-time"></div>
+      </div>
+    </header>
+    <main>
+      <input type="text" id="new-todo" placeholder="할 일을 입력하세요..." />
+      <button id="add-todo">추가</button>
+      <ul id="todo-list"></ul>
+    </main>
   </div>
-
-  <div class="filter-container">
-    <button id="all-btn">전체</button>
-    <button id="completed-btn">완료</button>
-    <button id="active-btn">미완료</button>
-  </div>
-
-  <ul id="todo-list"></ul>
-
-  <script src="script.js"></script>
-  <script>
-    // 서비스 워커 등록 코드
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-      });
-    }
-  </script>
+  <script src="./script.js"></script>
 </body>
 </html>

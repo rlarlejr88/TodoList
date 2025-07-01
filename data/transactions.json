@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "date": "2023-10-01",
+    "description": "Grocery shopping",
+    "amount": -50000,
+    "category": "Food"
+  },
+  {
+    "id": 2,
+    "date": "2023-10-05",
+    "description": "Salary",
+    "amount": 2000000,
+    "category": "Income"
+  },
+  {
+    "id": 3,
+    "date": "2023-10-10",
+    "description": "Electricity bill",
+    "amount": -80000,
+    "category": "Utilities"
+  }
+]
