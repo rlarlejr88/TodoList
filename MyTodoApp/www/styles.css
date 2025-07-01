@@ -1,0 +1,111 @@
+/* 기본 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 헤더 스타일 */
+  header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* 입력 영역 스타일 */
+  .input-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    gap: 10px;
+  }
+  
+  .input-container input {
+    padding: 10px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .input-container button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .input-container button:hover {
+    background-color: #45a049;
+  }
+  
+  /* 필터 버튼 영역 스타일 */
+  .filter-container {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .filter-container button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  /* 할 일 목록 스타일 */
+  #todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    width: 80%;
+  }
+  
+  /* 할 일 항목: 버튼과 텍스트 영역을 flex 컨테이너로 설정 */
+  .todo-item {
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 텍스트 영역: 가변 폭을 가지며 버튼은 오른쪽에 고정 */
+  .todo-item span {
+    flex: 1;
+    margin-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* 완료된 항목 스타일 */
+  .todo-item.completed span {
+    text-decoration: line-through;
+    color: #999;
+  }
+  
+  /* 할 일 항목 내 버튼 스타일 (수정, 삭제) */
+  .todo-item button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #f44336;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .todo-item button:hover {
+    background-color: #e53935;
+  }
+  
+  /* 수정 모드일 때 입력 필드 스타일 */
+  .todo-item input {
+    padding: 5px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
